@@ -1,0 +1,25 @@
+{
+  "message": "Read inventory data success",
+  "data": [
+    {
+      "sn": "900123467890111555321",
+      "product": "Black Coffe",
+      "price": "15000"
+    },
+    {
+      "sn": "900123467812341555346",
+      "product": "Keyboard",
+      "price": "100000"
+    },
+    {
+      "sn": "456123467812341555124",
+      "product": "Mouse",
+      "price": "30000"
+    },
+    {
+      "sn": "556123462212341555155",
+      "product": "Monitor",
+      "price": "800000"
+    }
+  ]
+}
