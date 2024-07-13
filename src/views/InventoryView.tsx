@@ -72,7 +72,7 @@ export default function InventoryView() {
           <tbody>
 
             {inventoryRecords?.map((item) => (
-              <tr>
+              <tr key={`k-inventory-${item.sn}`}>
                 <td>{item.sn}</td>
                 <td>{item.product}</td>
                 <td>{convertCurrency(item.price)}</td>
