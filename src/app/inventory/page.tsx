@@ -1,6 +1,6 @@
 import InventoryView from "@/views/InventoryView";
 
-export default function CartPage() {
+export default function InventoryPage() {
   return (
     <InventoryView />
   )
