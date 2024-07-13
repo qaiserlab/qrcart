@@ -1,27 +1,27 @@
 "use client"
 
-import Link from "next/link"
+import { Nav, NavItem, NavLink } from "reactstrap"
 
 export default function MenuWidget() {
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link href="/">
+    <section>
+      <Nav>
+        <NavItem>
+          <NavLink href="/">
             Home
-          </Link>
-        </li>
-        <li>
-          <Link href="/shopping-cart">
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/shopping-cart">
             Shopping Cart
-          </Link>
-        </li>
-        <li>
-          <Link href="/inventory">
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/inventory">
             Inventory
-          </Link>
-        </li>
-      </ul>
-    </nav>
+          </NavLink>
+        </NavItem>
+      </Nav>
+    </section>
   )
 }
