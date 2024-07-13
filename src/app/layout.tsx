@@ -11,6 +11,9 @@ export default function AppLayout({
 }) {
   return (
     <html>
+      <head>
+        <title>QRCart</title>
+      </head>
       <body>
         <Container>
           <Row>

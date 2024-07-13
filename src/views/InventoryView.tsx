@@ -1,8 +1,10 @@
 "use client"
 
-import { Table } from "reactstrap"
+import { useState } from "react"
+import { Modal, ModalBody, ModalFooter, ModalHeader, Table } from "reactstrap"
 
 export default function InventoryView() {
+  const [displayModal, setDisplayModal] = useState(false)
   return (
     <section>
       <h4>Inventory</h4>
@@ -21,11 +23,35 @@ export default function InventoryView() {
             <td>Black Coffe</td>
             <td>15.000</td>
             <td>
-              <a href="javascript:">View QRCode</a>
+              <a href="javascript:" onClick={() => setDisplayModal(true)}>View QRCode</a>
             </td>
           </tr>
         </tbody>
       </Table>
+
+      <Modal isOpen={displayModal} toggle={() => setDisplayModal(false)}>
+        <ModalHeader toggle={() => setDisplayModal(false)}>QRCode</ModalHeader>
+        <ModalBody>
+          <table>
+            <tr>
+              <td>#</td>
+              <td>: -</td>
+            </tr>
+            <tr>
+              <td>Product</td>
+              <td>: -</td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td>: -</td>
+            </tr>
+          </table>
+
+          <div style={{ textAlign: "center", margin: 48 }}>
+            --- QRCode Here ---
+          </div>
+        </ModalBody>
+      </Modal>
     </section>
   )
 }
