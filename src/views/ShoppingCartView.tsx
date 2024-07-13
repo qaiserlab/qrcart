@@ -1,17 +1,51 @@
 "use client"
 
 import { useState } from "react"
-import { Button, Input, Modal, ModalBody, ModalFooter, ModalHeader, Table } from "reactstrap"
+import { Button, Col, Form, Input, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from "reactstrap"
+
+function AddItemModal(props: TAddItemModalProps) {
+  return (
+    <Modal isOpen={props.display} toggle={props.onClose}>
+      <ModalHeader toggle={props.onClose}>Add Item</ModalHeader>
+      <ModalBody>
+        <Form>
+          <Row>
+            <Col md={2}>#</Col>
+            <Col><Input type="text" /></Col>
+          </Row>
+          <Row>
+            <Col md={2}>Product</Col>
+            <Col><Input type="text" disabled /></Col>
+          </Row>
+          <Row>
+            <Col md={2}>Price</Col>
+            <Col><Input type="text" disabled /></Col>
+          </Row>
+        </Form>
+      </ModalBody>
+      <ModalFooter>
+        <Button color="primary" onClick={() => props.onClose()}>
+          Add
+        </Button>{' '}
+        <Button color="secondary" onClick={props.onClose}>
+          Cancel
+        </Button>
+      </ModalFooter>
+    </Modal>
+  )
+}
 
 export default function ShoppingCartView() {
   const [displayModal, setDisplayModal] = useState(false)
+  const [displayAddItem, setDisplayAddItem] = useState(false)
 
   return (
-    <section>
+    <div>
       <h4>Shopping Cart</h4>
 
       <div style={{ textAlign: "right", paddingBottom: 16 }}>
         <Button color="primary">Scan QRCode</Button>&nbsp;
+        <Button color="primary" onClick={() => setDisplayAddItem(true)}>Add Item</Button>&nbsp;
         <Button color="success" onClick={() => setDisplayModal(true)}>Pay</Button>
       </div>
 
@@ -47,6 +81,8 @@ export default function ShoppingCartView() {
         </tfoot>
       </Table>
 
+      <AddItemModal display={displayAddItem} onClose={() => setDisplayAddItem(false)} />
+
       <Modal isOpen={displayModal} toggle={() => setDisplayModal(false)}>
         <ModalHeader toggle={() => setDisplayModal(false)}>QRCode</ModalHeader>
         <ModalBody>
@@ -74,6 +110,6 @@ export default function ShoppingCartView() {
           </Button>
         </ModalFooter>
       </Modal>
-    </section>
+    </div>
   )
 }
