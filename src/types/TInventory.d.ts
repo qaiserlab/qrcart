@@ -1,5 +1,5 @@
 interface TInventory {
-  sn: String
-  product: String
-  price: Number
+  sn: string
+  product: string
+  price: number
 }
