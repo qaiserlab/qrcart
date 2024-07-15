@@ -22,7 +22,7 @@ export default function useShoppingCart() {
     setIsFetching(true)
 
     axios
-      .get("/data/shopping-cart.json")
+      .get("/api/shopping-cart")
       .then((response: AxiosResponse) => {
         const result = response.data
         setShoppingCartRecords(result.data)

@@ -18,8 +18,11 @@ import { useFormik } from "formik"
 import convertCurrency from "@/helpers/FormatHelper"
 import useInventory from "@/hooks/useInventory"
 import useShoppingCart from "@/hooks/useShoppingCart"
+import axios from "axios"
 
 function AddItemModal(props: TAddItemModalProps) {
+  const [loading, setLoading] = useState(false)
+
   const formik = useFormik({
     initialValues: {
       sn: "",
@@ -27,7 +30,27 @@ function AddItemModal(props: TAddItemModalProps) {
     },
 
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2))
+      setLoading(true)
+
+      const price = parseInt(inventoryActive.price.toString())
+      const qty = values.qty
+      const subTotal = price * qty
+
+      const formData = {
+        ...inventoryActive,
+        ...values,
+        price,
+        subTotal,
+      }
+
+      axios
+        .post("/api/shopping-cart", formData)
+        .then((response) => {
+          console.log("here")
+          if (props.onSaved) props.onSaved()
+          props.onClose()
+        })
+        .finally(() => setLoading(false))
     },
   })
 
@@ -53,6 +76,12 @@ function AddItemModal(props: TAddItemModalProps) {
   useEffect(() => {
     fetchInventories()
   }, [])
+
+  useEffect(() => {
+    if (props.display) {
+      formik.resetForm()
+    }
+  }, [props.display])
 
   return (
     <Modal isOpen={props.display} toggle={props.onClose}>
@@ -102,9 +131,12 @@ function AddItemModal(props: TAddItemModalProps) {
           <Row>
             <Col md={3}>Sub Total</Col>
             <Col>
-            <Input
+              <Input
                 type="text"
-                value={convertCurrency(inventoryActive?.price * formik.values.qty) || "0"}
+                value={
+                  convertCurrency(inventoryActive?.price * formik.values.qty) ||
+                  "0"
+                }
                 disabled
               />
             </Col>
@@ -114,7 +146,7 @@ function AddItemModal(props: TAddItemModalProps) {
           <Button
             color="primary"
             type="submit"
-            disabled={!inventoryActive?.product}
+            disabled={!inventoryActive?.product || loading}
           >
             Add
           </Button>{" "}
@@ -131,9 +163,9 @@ export default function ShoppingCartView() {
   const [displayPay, setDisplayPay] = useState(false)
   const [displayAddItem, setDisplayAddItem] = useState(false)
 
-  const { 
-    isFetching, 
-    fetchShoppingCarts, 
+  const {
+    isFetching,
+    fetchShoppingCarts,
     shoppingCartRecords,
     getTotalQty,
     getTotalPrice,
@@ -178,9 +210,9 @@ export default function ShoppingCartView() {
                 <tr key={`k-inventory-${item.sn}`}>
                   <td>{item.sn}</td>
                   <td>{item.product}</td>
-                  <td>{item.price}</td>
+                  <td>{convertCurrency(item.price)}</td>
                   <td>{item.qty}</td>
-                  <td>{item.subTotal}</td>
+                  <td>{convertCurrency(item.subTotal)}</td>
                   <td>
                     <a href="javascript:">Delete</a>
                   </td>
@@ -190,15 +222,19 @@ export default function ShoppingCartView() {
           </tbody>
           <tfoot>
             <tr>
-              <th colSpan={3}>Total</th>
-              <th>{getTotalQty()}</th>
-              <th colSpan={2}>{getTotalPrice()}</th>
+              <th colSpan={2}>Total</th>
+              <th>{convertCurrency(getTotalPrice())}</th>
+              <th>{convertCurrency(getTotalQty())}</th>
+              <th colSpan={2}>
+                {convertCurrency(getTotalPrice() * getTotalQty())}
+              </th>
             </tr>
           </tfoot>
         </Table>
       )}
       <AddItemModal
         display={displayAddItem}
+        onSaved={() => fetchShoppingCarts()}
         onClose={() => setDisplayAddItem(false)}
       />
 
