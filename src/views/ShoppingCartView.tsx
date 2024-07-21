@@ -46,7 +46,6 @@ function AddItemModal(props: TAddItemModalProps) {
       axios
         .post("/api/shopping-cart", formData)
         .then((response) => {
-          console.log("here")
           if (props.onSaved) props.onSaved()
           props.onClose()
         })
@@ -160,16 +159,11 @@ function AddItemModal(props: TAddItemModalProps) {
 }
 
 function ConfirmDeleteModal(props: TConfirmDeleteModalProps) {
-
-  const {
-    inventoryActive,
-  } = useInventory()
-
   return (
     <Modal isOpen={props.display} toggle={props.onClose}>
       <ModalHeader toggle={props.onClose}>Add Item</ModalHeader>
       <ModalBody>
-        Are you sure you want to delete {inventoryActive.product}?
+        Are you sure you want to delete {props.sn}?
       </ModalBody>
       <ModalFooter>
         <Button color="primary">
@@ -184,6 +178,8 @@ function ConfirmDeleteModal(props: TConfirmDeleteModalProps) {
 }
 
 export default function ShoppingCartView() {
+  const [snActive, setSnActive] = useState("")
+
   const [displayPay, setDisplayPay] = useState(false)
   const [displayDelete, setDisplayDelete] = useState(false)
   const [displayAddItem, setDisplayAddItem] = useState(false)
@@ -196,11 +192,8 @@ export default function ShoppingCartView() {
     getTotalPrice,
   } = useShoppingCart()
 
-  const {
-    setInventoryActiveBySn,
-  } = useInventory()
-
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = (sn: string) => {
+    setSnActive(sn)
     setDisplayDelete(true)
   }
 
@@ -247,7 +240,10 @@ export default function ShoppingCartView() {
                   <td>{item.qty}</td>
                   <td>{convertCurrency(item.subTotal)}</td>
                   <td>
-                    <a href="javascript:" onClick={handleConfirmDelete}>Delete</a>
+                    <a 
+                      href="javascript:" 
+                      onClick={() => handleConfirmDelete(item.sn)}
+                    >Delete</a>
                   </td>
                 </tr>
               )
@@ -274,6 +270,7 @@ export default function ShoppingCartView() {
 
       <ConfirmDeleteModal
         display={displayDelete}
+        sn={snActive}
         onOk={() => fetchShoppingCarts()}
         onClose={() => setDisplayDelete(false)}
       />
