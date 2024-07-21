@@ -159,8 +159,33 @@ function AddItemModal(props: TAddItemModalProps) {
   )
 }
 
+function ConfirmDeleteModal(props: TConfirmDeleteModalProps) {
+
+  const {
+    inventoryActive,
+  } = useInventory()
+
+  return (
+    <Modal isOpen={props.display} toggle={props.onClose}>
+      <ModalHeader toggle={props.onClose}>Add Item</ModalHeader>
+      <ModalBody>
+        Are you sure you want to delete {inventoryActive.product}?
+      </ModalBody>
+      <ModalFooter>
+        <Button color="primary">
+          OK
+        </Button>{" "}
+        <Button color="secondary" onClick={props.onClose}>
+          Cancel
+        </Button>
+      </ModalFooter>
+    </Modal>
+  )
+}
+
 export default function ShoppingCartView() {
   const [displayPay, setDisplayPay] = useState(false)
+  const [displayDelete, setDisplayDelete] = useState(false)
   const [displayAddItem, setDisplayAddItem] = useState(false)
 
   const {
@@ -170,6 +195,14 @@ export default function ShoppingCartView() {
     getTotalQty,
     getTotalPrice,
   } = useShoppingCart()
+
+  const {
+    setInventoryActiveBySn,
+  } = useInventory()
+
+  const handleConfirmDelete = () => {
+    setDisplayDelete(true)
+  }
 
   useEffect(() => {
     fetchShoppingCarts()
@@ -214,7 +247,7 @@ export default function ShoppingCartView() {
                   <td>{item.qty}</td>
                   <td>{convertCurrency(item.subTotal)}</td>
                   <td>
-                    <a href="javascript:">Delete</a>
+                    <a href="javascript:" onClick={handleConfirmDelete}>Delete</a>
                   </td>
                 </tr>
               )
@@ -232,10 +265,17 @@ export default function ShoppingCartView() {
           </tfoot>
         </Table>
       )}
+
       <AddItemModal
         display={displayAddItem}
         onSaved={() => fetchShoppingCarts()}
         onClose={() => setDisplayAddItem(false)}
+      />
+
+      <ConfirmDeleteModal
+        display={displayDelete}
+        onOk={() => fetchShoppingCarts()}
+        onClose={() => setDisplayDelete(false)}
       />
 
       <Modal isOpen={displayPay} toggle={() => setDisplayPay(false)}>
